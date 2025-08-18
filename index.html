@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <title>iFrame Test Page</title>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/>
+    <style>
+      body {
+        margin: 0;
+      }
+      .page {
+        margin: 12px;
+      }
+      .page-header {
+        height: 40px;
+      }
+      iframe {
+        height: calc(100vh - 68px);
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="page-header">
+        <h1>iFrame Test Page</h1>
+      </div>
+      <div class="iframe-container" id="iframeContainer"></div>
+    </div>
+    <script>
+      window.onload = function() {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        // TODO: Add a helpful message if params are missing
+        const env = urlParams.get("env");
+        let envUrl;
+        switch (env) {
+          case "local":
+            envUrl = "http://localhost/sf/esign_event/auth/iframe_landing_page?token=";
+            break;
+          case "qa":
+            envUrl = "https://simplifile.q1.intcx.net/sf/esign_event/auth/iframe_landing_page?token=";
+            break;
+            // TODO: Add other environments
+        }
+        const token = urlParams.get("token");
+        if (envUrl && token) {
+          const newIFrame = document.createElement("iframe");
+          newIFrame.setAttribute("src", envUrl + token);
+          const iFrameContainer = document.getElementById("iframeContainer");
+          iFrameContainer.appendChild(newIFrame);
+        }
+      }
+    </script>
+  </body>
+</html>
