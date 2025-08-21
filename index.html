@@ -22,6 +22,9 @@
       <div class="page-header">
         <h1>iFrame Test Page</h1>
       </div>
+      <div>
+        <button onclick="openPopup()">Open Popup</button>
+      </div>
       <div class="iframe-container" id="iframeContainer"></div>
     </div>
     <script>
@@ -47,6 +50,9 @@
           const iFrameContainer = document.getElementById("iframeContainer");
           iFrameContainer.appendChild(newIFrame);
         }
+      }
+      function openPopup() {
+        const popup = window.open("ballred1-ice.github.io", "EE", "width=500,height=300");
       }
     </script>
   </body>
