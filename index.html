@@ -29,22 +29,24 @@
         <!-- <button onclick="openPopup()">Open Popup</button> -->
       <!-- </div> -->
       <div class="help-container" id="helpContainer">
-        <div>Env:</div>
-        <div>
-          <input type="radio" id="localEnv" name="env" value="local">
-          <label for="localEnv">local</label><br>
-          <input type="radio" id="q1Env" name="env" value="q1">
-          <label for="q1Env">q1</label><br>
+        <div class="section">
+          <label>Env:</label>
+          <div>
+            <input type="radio" id="localEnv" name="env" value="local">
+            <label for="localEnv">local</label><br>
+            <input type="radio" id="q1Env" name="env" value="q1">
+            <label for="q1Env">q1</label><br>
+          </div>
         </div>
-        <div>Token:</div>
-        <div>
+        <div class="section">
+          <label for="tokenInput">Token:</label>
           <input id="tokenInput" type="text">
         </div>
-        <div>
-          Open in separate window:
-          <div>
-            <input type="checkbox" id="openInSeparateWindowInput" name="openInSeparateWindow" value="true">
-          </div>
+        <div class="section">
+          <label for="openInSeparateWindowInput">
+            Open in separate window:
+          </label>
+          <input type="checkbox" id="openInSeparateWindowInput" name="openInSeparateWindow" value="true">
         </div>
         <div>
           <button onclick="submit()">Apply</button>
@@ -79,7 +81,18 @@
           helpContainer.style.display = "block";
         }
       }
+
+      function getSelectedRadioValue(radioGroupName) {
+        const selectedRadio = document.querySelector(`input[name="${radioGroupName}"]:checked`);
+        if (selectedRadio) {
+          return selectedRadio.value;
+        }
+        return null; // Or handle the case where no radio is selected
+      }
+      
       function submit() {
+        const env = getSelectedRadioValue("env");
+        const token = document.getElementById("tokenInput").value;
         const url = "https://ballred1-ice.github.io/?env=" + env + "&token=" + token;
         window.location.href = url;
       }
