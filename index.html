@@ -67,15 +67,15 @@
         let envUrl;
         switch (env) {
           case "local":
-            envUrl = "http://localhost/sf/esign_event/auth/iframe_landing_page?token=";
+            envUrl = "http://localhost/sf/esign_event/auth/iframe_landing_page";
             break;
           case "q1":
-            envUrl = "https://simplifile.q1.intcx.net/sf/esign_event/auth/iframe_landing_page?token=";
+            envUrl = "https://simplifile.q1.intcx.net/sf/esign_event/auth/iframe_landing_page";
             break;
             // TODO: Add other environments
         }
         const token = urlParams.get("token");
-        envUrl += token;
+        envUrl += "?token=" + token;
         if (envUrl && urlParams.get("openInSeparateWindow") === "true") {
           envUrl += "&openInSeparateWindow=true";
         }
