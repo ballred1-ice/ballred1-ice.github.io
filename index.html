@@ -74,6 +74,9 @@
             break;
             // TODO: Add other environments
         }
+        if (envUrl && urlParams.get("openInSeparateWindow") === "true") {
+          envUrl += "&openInSeparateWindow=true";
+        }
         const token = urlParams.get("token");
         if (envUrl && token) {
           const newIFrame = document.createElement("iframe");
@@ -98,7 +101,7 @@
         const env = getSelectedRadioOrCheckboxValue("env");
         const token = document.getElementById("tokenInput").value;
         const openInSeparateWindow = getSelectedRadioOrCheckboxValue("openInSeparateWindow");
-        const url = "https://ballred1-ice.github.io/?env=" + env + "&token=" + token;
+        let url = "https://ballred1-ice.github.io/?env=" + env + "&token=" + token;
         if (openInSeparateWindow === "true") {
           url += "&openInSeparateWindow=true";
         }
