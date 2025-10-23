@@ -81,7 +81,7 @@
         }
         if (envUrl && token) {
           const newIFrame = document.createElement("iframe");
-          newIFrame.setAttribute("src", envUrl + token);
+          newIFrame.setAttribute("src", envUrl);
           const iFrameContainer = document.getElementById("iframeContainer");
           iFrameContainer.appendChild(newIFrame);
         } else {
