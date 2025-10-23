@@ -15,6 +15,9 @@
         height: calc(100vh - 68px);
         width: 100%;
       }
+      .help-container {
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -25,6 +28,28 @@
       <!-- <div> -->
         <!-- <button onclick="openPopup()">Open Popup</button> -->
       <!-- </div> -->
+      <div class="help-container" id="helpContainer">
+        <div>Env:</div>
+        <div>
+          <input type="radio" id="localEnv" name="env" value="local">
+          <label for="localEnv">local</label><br>
+          <input type="radio" id="q1Env" name="env" value="q1">
+          <label for="q1Env">q1</label><br>
+        </div>
+        <div>Token:</div>
+        <div>
+          <input id="tokenInput" type="text">
+        </div>
+        <div>
+          Open in separate window:
+          <div>
+            <input type="checkbox" id="openInSeparateWindowInput" name="openInSeparateWindow" value="true">
+          </div>
+        </div>
+        <div>
+          <button onclick="submit()">Apply</button>
+        </div>
+      </div>
       <div class="iframe-container" id="iframeContainer"></div>
     </div>
     <script>
@@ -49,10 +74,14 @@
           newIFrame.setAttribute("src", envUrl + token);
           const iFrameContainer = document.getElementById("iframeContainer");
           iFrameContainer.appendChild(newIFrame);
+        } else {
+          const helpContainer = document.getElementById("helpContainer");
+          helpContainer.style.display = "block";
         }
       }
-      function openPopup() {
-        const popup = window.open("ballred1-ice.github.io", "EE", "width=500,height=300");
+      function submit() {
+        const url = "https://ballred1-ice.github.io/?env=" + env + "&token=" + token;
+        window.location.href = url;
       }
     </script>
   </body>
