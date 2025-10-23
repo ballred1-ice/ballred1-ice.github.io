@@ -18,6 +18,10 @@
       .help-container {
         display: none;
       }
+      .section {
+        margin-top: 5px;
+        margin-bottom: 5px;
+      }
     </style>
   </head>
   <body>
@@ -30,21 +34,21 @@
       <!-- </div> -->
       <div class="help-container" id="helpContainer">
         <div class="section">
-          <label>Env:</label>
+          <label><b>Env:</b></label>
           <div>
             <input type="radio" id="localEnv" name="env" value="local">
             <label for="localEnv">local</label><br>
-            <input type="radio" id="q1Env" name="env" value="q1">
+            <input type="radio" id="q1Env" name="env" value="q1" checked>
             <label for="q1Env">q1</label><br>
           </div>
         </div>
         <div class="section">
-          <label for="tokenInput">Token:</label>
+          <label for="tokenInput"><b>Token:</b></label>
           <input id="tokenInput" type="text">
         </div>
         <div class="section">
           <label for="openInSeparateWindowInput">
-            Open in separate window:
+            <b>Open in separate window:</b>
           </label>
           <input type="checkbox" id="openInSeparateWindowInput" name="openInSeparateWindow" value="true">
         </div>
@@ -82,7 +86,7 @@
         }
       }
 
-      function getSelectedRadioValue(radioGroupName) {
+      function getSelectedRadioOrCheckboxValue(radioGroupName) {
         const selectedRadio = document.querySelector(`input[name="${radioGroupName}"]:checked`);
         if (selectedRadio) {
           return selectedRadio.value;
@@ -91,9 +95,12 @@
       }
       
       function submit() {
-        const env = getSelectedRadioValue("env");
+        const env = getSelectedRadioOrCheckboxValue("env");
         const token = document.getElementById("tokenInput").value;
+        const openInSeparateWindow = getSelectedRadioOrCheckboxValue("openInSeparateWindow");
         const url = "https://ballred1-ice.github.io/?env=" + env + "&token=" + token;
+        if (openInSeparateWindow === "true") {
+          url += "&openInSeparateWindow=true";
         window.location.href = url;
       }
     </script>
