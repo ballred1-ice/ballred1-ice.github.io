@@ -57,10 +57,16 @@
           <input id="tokenInput" type="text">
         </div>
         <div class="section">
-          <label for="openInSeparateWindowInput">
-            <b>Open in separate window:</b>
-          </label>
           <input type="checkbox" id="openInSeparateWindowInput" name="openInSeparateWindow" value="true">
+          <label for="openInSeparateWindowInput">
+            Open in separate window
+          </label>
+        </div>
+        <div class="section">
+          <input type="checkbox" id="bypassLandingPageInput" name="bypassLandingPage" value="true">
+          <label for="bypassLandingPageInput">
+            Bypass landing page (sort of)
+          </label>
         </div>
         <div class="section">
           <button class="apply-btn" onclick="submit()">Apply</button>
@@ -72,19 +78,47 @@
       window.onload = function() {
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
-        // TODO: Add a helpful message if params are missing
+        const bypassLandingPage = urlParams.get("bypassLandingPage");
         const env = urlParams.get("env");
         let envUrl;
-        switch (env) {
-          case "local":
-            envUrl = "http://localhost/sf/esign_event/auth/iframe_landing_page";
-            break;
-          case "q1":
-            envUrl = "https://simplifile.q1.intcx.net/sf/esign_event/auth/iframe_landing_page";
-            break;
-            // TODO: Add other environments
+        if (bypassLandingPage) {
+          switch (env) {
+            case "local";
+              envUrl = "http://localhost";
+              break;
+            case "q1":
+              envUrl = "https://ea.simplifile.q1.intcx.net";
+              break;
+              // TODO: Add other environments
+          }
         }
         const token = urlParams.get("token");
+        if (envUrl && token) {
+          if (bypassLandingPage) {
+            envUrl += "/sf/ui/sign-event/external/sign-event-auth/" + token;
+            window.open(envUrl, "_blank");
+          } else {
+            // iframe test
+            envUrl += "/sf/esign_event/auth/iframe_landing_page?token=" + token;
+            if (envUrl && urlParams.get("openInSeparateWindow") === "true") {
+              envUrl += "&openInSeparateWindow=true";
+            }
+            const newIFrame = document.createElement("iframe");
+            newIFrame.setAttribute("src", envUrl);
+            const iFrameContainer = document.getElementById("iframeContainer");
+            iFrameContainer.appendChild(newIFrame);
+            iFrameContainer.style.display = "block";
+            const returnBtn = document.getElementById("returnBtn");
+            returnBtn.style.display = "block";
+          }
+        } else {
+          const helpContainer = document.getElementById("helpContainer");
+          helpContainer.style.display = "block";
+        }
+
+
+        
+        
         envUrl += "?token=" + token;
         if (envUrl && urlParams.get("openInSeparateWindow") === "true") {
           envUrl += "&openInSeparateWindow=true";
@@ -114,10 +148,14 @@
       function submit() {
         const env = getSelectedRadioOrCheckboxValue("env");
         const token = document.getElementById("tokenInput").value;
-        const openInSeparateWindow = getSelectedRadioOrCheckboxValue("openInSeparateWindow");
         let url = "https://ballred1-ice.github.io/?env=" + env + "&token=" + token;
+        const openInSeparateWindow = getSelectedRadioOrCheckboxValue("openInSeparateWindow");
         if (openInSeparateWindow === "true") {
           url += "&openInSeparateWindow=true";
+        }
+        const bypassLandingPage = getSelectedRadioOrCheckboxValue("bypassLandingPage");
+        if (openInSeparateWindow === "true") {
+          url += "&bypassLandingPage=true";
         }
         window.location.href = url;
       }
