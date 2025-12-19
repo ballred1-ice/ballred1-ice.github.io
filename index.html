@@ -115,26 +115,6 @@
           const helpContainer = document.getElementById("helpContainer");
           helpContainer.style.display = "block";
         }
-
-
-        
-        
-        envUrl += "?token=" + token;
-        if (envUrl && urlParams.get("openInSeparateWindow") === "true") {
-          envUrl += "&openInSeparateWindow=true";
-        }
-        if (envUrl && token) {
-          const newIFrame = document.createElement("iframe");
-          newIFrame.setAttribute("src", envUrl);
-          const iFrameContainer = document.getElementById("iframeContainer");
-          iFrameContainer.appendChild(newIFrame);
-          iFrameContainer.style.display = "block";
-          const returnBtn = document.getElementById("returnBtn");
-          returnBtn.style.display = "block";
-        } else {
-          const helpContainer = document.getElementById("helpContainer");
-          helpContainer.style.display = "block";
-        }
       }
 
       function getSelectedRadioOrCheckboxValue(radioGroupName) {
