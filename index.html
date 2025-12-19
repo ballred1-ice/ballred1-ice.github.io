@@ -94,32 +94,30 @@
         }
         const token = urlParams.get("token");
         if (envUrl && token) {
+          const iFrameContainer = document.getElementById("iframeContainer");
           if (bypassLandingPage) {
+            console.debug("Bypassing landing page");
             envUrl += "/sf/ui/sign-event/external/sign-event-auth/" + token;
             console.debug("Calling window.open with url " + envUrl);
             window.open(envUrl, "_blank");
-            const iFrameContainer = document.getElementById("iframeContainer");
+            window.addEventListener("message", (message) => { console.log("message received: ", message); }, false);
             const infoP = document.createElement("p");
             infoP.textContent = "New window opened. Listening for messages from opened window (check the console in dev tools)...";
             iFrameContainer.appendChild(infoP);
-            iFrameContainer.style.display = "block";
-            window.addEventListener("message", (message) => { console.log("message received: ", message); }, false);
-            const returnBtn = document.getElementById("returnBtn");
-            returnBtn.style.display = "block";
           } else {
             // iframe test
+            console.debug("Running framed landing page test");
             envUrl += "/sf/esign_event/auth/iframe_landing_page?token=" + token;
             if (envUrl && urlParams.get("openInSeparateWindow") === "true") {
               envUrl += "&openInSeparateWindow=true";
             }
             const newIFrame = document.createElement("iframe");
             newIFrame.setAttribute("src", envUrl);
-            const iFrameContainer = document.getElementById("iframeContainer");
             iFrameContainer.appendChild(newIFrame);
-            iFrameContainer.style.display = "block";
-            const returnBtn = document.getElementById("returnBtn");
-            returnBtn.style.display = "block";
           }
+          iFrameContainer.style.display = "block";
+          const returnBtn = document.getElementById("returnBtn");
+          returnBtn.style.display = "block";
         } else {
           const helpContainer = document.getElementById("helpContainer");
           helpContainer.style.display = "block";
