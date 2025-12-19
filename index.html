@@ -135,7 +135,7 @@
           url += "&openInSeparateWindow=true";
         }
         const bypassLandingPage = getSelectedRadioOrCheckboxValue("bypassLandingPage");
-        if (openInSeparateWindow === "true") {
+        if (bypassLandingPage === "true") {
           url += "&bypassLandingPage=true";
         }
         console.debug("Redirecting to " + url);
