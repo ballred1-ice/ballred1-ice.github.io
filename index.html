@@ -96,6 +96,7 @@
         if (envUrl && token) {
           if (bypassLandingPage) {
             envUrl += "/sf/ui/sign-event/external/sign-event-auth/" + token;
+            console.debug("Calling window.open with url " + envUrl);
             window.open(envUrl, "_blank");
           } else {
             // iframe test
@@ -137,6 +138,7 @@
         if (openInSeparateWindow === "true") {
           url += "&bypassLandingPage=true";
         }
+        console.debug("Redirecting to " + url);
         window.location.href = url;
       }
 
