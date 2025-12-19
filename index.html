@@ -81,16 +81,14 @@
         const bypassLandingPage = urlParams.get("bypassLandingPage");
         const env = urlParams.get("env");
         let envUrl;
-        if (bypassLandingPage) {
-          switch (env) {
-            case "local":
-              envUrl = "http://localhost";
-              break;
-            case "q1":
-              envUrl = "https://ea.simplifile.q1.intcx.net";
-              break;
-              // TODO: Add other environments
-          }
+        switch (env) {
+          case "local":
+            envUrl = "http://localhost";
+            break;
+          case "q1":
+            envUrl = "https://ea.simplifile.q1.intcx.net";
+            break;
+            // TODO: Add other environments
         }
         const token = urlParams.get("token");
         console.debug("envUrl=" + envUrl + ", token=" + token);
