@@ -9,7 +9,13 @@
         margin: 12px;
       }
       .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         height: 40px;
+      }
+      #returnBtn {
+        display: none;
       }
       iframe {
         height: calc(100vh - 68px);
@@ -25,12 +31,16 @@
         margin-top: 10px;
         margin-bottom: 10px;
       }
+      #tokenInput {
+        width: 300px;
+      }
     </style>
   </head>
   <body>
     <div class="page">
       <div class="page-header">
         <h1>iFrame Test Page</h1>
+        <button id="returnBtn" onclick="returnToInputs()">Return</button>
       </div>
       <div class="help-container" id="helpContainer">
         <div class="section">
@@ -56,9 +66,7 @@
           <button class="apply-btn" onclick="submit()">Apply</button>
         </div>
       </div>
-      <div class="iframe-container" id="iframeContainer">
-        <button class="return-btn" onclick="returnToInputs()">Return</button>
-      </div>
+      <div class="iframe-container" id="iframeContainer"></div>
     </div>
     <script>
       window.onload = function() {
@@ -87,6 +95,8 @@
           const iFrameContainer = document.getElementById("iframeContainer");
           iFrameContainer.appendChild(newIFrame);
           iFrameContainer.style.display = "block";
+          const returnBtn = document.getElementById("returnBtn");
+          returnBtn.style.display = "block";
         } else {
           const helpContainer = document.getElementById("helpContainer");
           helpContainer.style.display = "block";
