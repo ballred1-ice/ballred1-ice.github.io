@@ -53,7 +53,9 @@
           <button class="apply-btn" onclick="submit()">Apply</button>
         </div>
       </div>
-      <div class="iframe-container" id="iframeContainer"></div>
+      <div class="iframe-container" id="iframeContainer">
+        <button class="return-btn" onclick="returnToInputs()">Return</button>
+      </div>
     </div>
     <script>
       window.onload = function() {
@@ -103,6 +105,11 @@
         if (openInSeparateWindow === "true") {
           url += "&openInSeparateWindow=true";
         }
+        window.location.href = url;
+      }
+
+      function returnToInputs() {
+        let url = "https://ballred1-ice.github.io;
         window.location.href = url;
       }
     </script>
