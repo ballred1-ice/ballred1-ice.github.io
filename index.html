@@ -15,6 +15,9 @@
         height: calc(100vh - 68px);
         width: 100%;
       }
+      .iframe-container {
+        display: none;
+      }
       .help-container {
         display: none;
       }
@@ -83,6 +86,7 @@
           newIFrame.setAttribute("src", envUrl);
           const iFrameContainer = document.getElementById("iframeContainer");
           iFrameContainer.appendChild(newIFrame);
+          iFrameContainer.style.display = "block";
         } else {
           const helpContainer = document.getElementById("helpContainer");
           helpContainer.style.display = "block";
