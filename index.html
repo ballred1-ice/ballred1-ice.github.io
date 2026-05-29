@@ -1,156 +1,449 @@
-<html>
-  <head>
-    <title>Bryce's Test Page</title>
-    <style>
-      body {
-        margin: 0;
-      }
-      .page {
-        margin: 12px;
-      }
-      .page-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 40px;
-      }
-      #returnBtn {
-        display: none;
-      }
-      iframe {
-        height: calc(100vh - 68px);
-        width: 100%;
-      }
-      .iframe-container {
-        display: none;
-      }
-      .help-container {
-        display: none;
-      }
-      .section {
-        margin-top: 10px;
-        margin-bottom: 10px;
-      }
-      #tokenInput {
-        width: 300px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="page">
-      <div class="page-header">
-        <h1>Bryce's EE Test Page</h1>
-        <button id="returnBtn" onclick="returnToInputs()">Return</button>
-      </div>
-      <div class="help-container" id="helpContainer">
-        <div class="section">
-          <label><b>Env:</b></label>
-          <div>
-            <input type="radio" id="localEnv" name="env" value="local" checked>
-            <label for="localEnv">local</label><br>
-            <input type="radio" id="q1Env" name="env" value="q1">
-            <label for="q1Env">q1</label><br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bryce's EE Test Page</title>
+  <style>
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --border: #e4e4e7;
+      --border-strong: #d4d4d8;
+      --text: #18181b;
+      --text-muted: #71717a;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-soft: rgba(37, 99, 235, 0.1);
+      --error: #dc2626;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---------- Form view ---------- */
+    .form-view {
+      display: none;
+      flex: 1;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 48px 24px;
+    }
+
+    .form-card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+    }
+
+    .form-title {
+      margin: 0 0 4px 0;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .form-subtitle {
+      margin: 0 0 24px 0;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .field { margin-bottom: 20px; }
+
+    .field-label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .radio-option { flex: 1; position: relative; }
+
+    .radio-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .radio-option label {
+      display: block;
+      text-align: center;
+      padding: 8px 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 13px;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+    }
+
+    .radio-option label:hover { border-color: var(--accent); }
+
+    .radio-option input:checked + label {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .radio-option input:focus-visible + label {
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .text-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 13px;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    .text-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .text-input.error { border-color: var(--error); }
+
+    .field-error {
+      display: none;
+      margin-top: 6px;
+      color: var(--error);
+      font-size: 12px;
+    }
+
+    .field-error.visible { display: block; }
+
+    .checkbox-field {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .checkbox-field input {
+      margin-top: 2px;
+      accent-color: var(--accent);
+    }
+
+    .checkbox-field label {
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .checkbox-hint { color: var(--text-muted); }
+
+    .apply-btn {
+      width: 100%;
+      margin-top: 8px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: var(--radius);
+      background: var(--accent);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .apply-btn:hover:not(:disabled) { background: var(--accent-hover); }
+
+    .apply-btn:disabled {
+      background: var(--border-strong);
+      cursor: not-allowed;
+    }
+
+    /* ---------- Iframe view ---------- */
+    .iframe-view {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+    }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 8px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-label { color: var(--text-muted); }
+
+    .status-value {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-weight: 500;
+    }
+
+    .env-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #ecfeff;
+      color: #0e7490;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .status-spacer { flex: 1; }
+
+    .return-btn {
+      padding: 6px 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--text);
+      font-size: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .return-btn:hover {
+      border-color: var(--accent);
+      background: var(--bg);
+    }
+
+    .iframe-host {
+      flex: 1;
+      display: flex;
+    }
+
+    iframe {
+      flex: 1;
+      width: 100%;
+      border: none;
+    }
+
+    .info-message {
+      padding: 24px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- Form view -->
+    <div class="form-view" id="formView">
+      <div class="form-card">
+        <h1 class="form-title">EE iframe test page</h1>
+        <p class="form-subtitle">Configure an environment and token to load the app in an iframe.</p>
+
+        <div class="field">
+          <label class="field-label">Environment</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" id="localEnv" name="env" value="local" checked>
+              <label for="localEnv">local</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" id="q1Env" name="env" value="q1">
+              <label for="q1Env">q1</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" id="i1Env" name="env" value="i1">
+              <label for="i1Env">i1</label>
+            </div>
           </div>
         </div>
-        <div class="section">
-          <label for="tokenInput"><b>Token:</b></label>
-          <input id="tokenInput" type="text">
+
+        <div class="field">
+          <label class="field-label" for="tokenInput">Token</label>
+          <input id="tokenInput" class="text-input" type="text" placeholder="Paste token from event invite" autocomplete="off" spellcheck="false">
+          <div class="field-error" id="tokenError">Token is required.</div>
         </div>
-        <div class="section">
-          <input type="checkbox" id="openInSeparateWindowInput" name="openInSeparateWindow" value="true">
-          <label for="openInSeparateWindowInput">
-            Open in separate window (landing page flow only)
-          </label>
+
+        <div class="field">
+          <div class="checkbox-field">
+            <input type="checkbox" id="openInSeparateWindowInput" name="openInSeparateWindow" value="true">
+            <label for="openInSeparateWindowInput">
+              Open in separate window <span class="checkbox-hint">(landing page flow only)</span>
+            </label>
+          </div>
+          <div class="checkbox-field">
+            <input type="checkbox" id="bypassLandingPageInput" name="bypassLandingPage" value="true">
+            <label for="bypassLandingPageInput">
+              Bypass landing page <span class="checkbox-hint">(non-SSO; token must come from event invite)</span>
+            </label>
+          </div>
         </div>
-        <div class="section">
-          <input type="checkbox" id="bypassLandingPageInput" name="bypassLandingPage" value="true">
-          <label for="bypassLandingPageInput">
-            Bypass landing page (non-sso, you must get token from event invite)
-          </label>
-        </div>
-        <div class="section">
-          <button class="apply-btn" onclick="submit()">Apply</button>
-        </div>
+
+        <button class="apply-btn" id="applyBtn" onclick="submit()" disabled>Apply</button>
       </div>
-      <div class="iframe-container" id="iframeContainer"></div>
     </div>
-    <script>
-      window.onload = function() {
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const bypassLandingPage = urlParams.get("bypassLandingPage");
-        const env = urlParams.get("env");
-        let envUrl;
-        switch (env) {
-          case "local":
-            envUrl = "http://localhost";
-            break;
-          case "q1":
-            envUrl = "https://ea.simplifile.q1.intcx.net";
-            break;
-            // TODO: Add other environments
+
+    <!-- Iframe view -->
+    <div class="iframe-view" id="iframeView">
+      <div class="status-bar">
+        <div class="status-item">
+          <span class="status-label">Env</span>
+          <span class="env-badge" id="statusEnv"></span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Token</span>
+          <span class="status-value" id="statusToken"></span>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Mode</span>
+          <span class="status-value" id="statusMode"></span>
+        </div>
+        <div class="status-spacer"></div>
+        <button class="return-btn" onclick="returnToInputs()">Return</button>
+      </div>
+      <div class="iframe-host" id="iframeContainer"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const ENV_URLS = {
+      local: "http://localhost",
+      q1: "https://ea.simplifile.q1.intcx.net",
+      i1: "https://simplifile.i1.intcx.net"
+    };
+
+    window.onload = function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const env = urlParams.get("env");
+      const token = urlParams.get("token");
+      const bypassLandingPage = urlParams.get("bypassLandingPage");
+      const openInSeparateWindow = urlParams.get("openInSeparateWindow") === "true";
+      const envUrl = ENV_URLS[env];
+
+      console.debug("envUrl=" + envUrl + ", token=" + token);
+
+      if (envUrl && token) {
+        showIframeView(env, token, envUrl, bypassLandingPage, openInSeparateWindow);
+      } else {
+        showFormView();
+      }
+    };
+
+    function showFormView() {
+      document.getElementById("formView").style.display = "flex";
+      const tokenInput = document.getElementById("tokenInput");
+      const applyBtn = document.getElementById("applyBtn");
+      const tokenError = document.getElementById("tokenError");
+
+      const refreshApplyState = () => {
+        const hasToken = tokenInput.value.trim().length > 0;
+        applyBtn.disabled = !hasToken;
+        if (hasToken) {
+          tokenError.classList.remove("visible");
+          tokenInput.classList.remove("error");
         }
-        const token = urlParams.get("token");
-        console.debug("envUrl=" + envUrl + ", token=" + token);
-        if (envUrl && token) {
-          const iFrameContainer = document.getElementById("iframeContainer");
-          if (bypassLandingPage) {
-            console.debug("Bypassing landing page");
-            envUrl += "/sf/ui/sign-event/external/sign-event-auth/" + token;
-            console.debug("Calling window.open with url " + envUrl);
-            window.open(envUrl, "_blank");
-            window.addEventListener("message", (message) => { console.log("message received: ", message); }, false);
-            const infoP = document.createElement("p");
-            infoP.textContent = "New window opened. Listening for messages from opened window (check the console in dev tools)...";
-            iFrameContainer.appendChild(infoP);
-          } else {
-            // iframe test
-            console.debug("Running framed landing page test");
-            envUrl += "/sf/esign_event/auth/iframe_landing_page?token=" + token;
-            if (envUrl && urlParams.get("openInSeparateWindow") === "true") {
-              envUrl += "&openInSeparateWindow=true";
-            }
-            const newIFrame = document.createElement("iframe");
-            newIFrame.setAttribute("src", envUrl);
-            iFrameContainer.appendChild(newIFrame);
-          }
-          iFrameContainer.style.display = "block";
-          const returnBtn = document.getElementById("returnBtn");
-          returnBtn.style.display = "block";
-        } else {
-          const helpContainer = document.getElementById("helpContainer");
-          helpContainer.style.display = "block";
+      };
+      tokenInput.addEventListener("input", refreshApplyState);
+      tokenInput.focus();
+    }
+
+    function showIframeView(env, token, envUrl, bypassLandingPage, openInSeparateWindow) {
+      const iframeContainer = document.getElementById("iframeContainer");
+      document.getElementById("statusEnv").textContent = env;
+      const statusToken = document.getElementById("statusToken");
+      statusToken.textContent = truncateToken(token);
+      statusToken.title = token;
+
+      let mode;
+      if (bypassLandingPage) {
+        mode = "bypass landing (new window)";
+        const targetUrl = envUrl + "/sf/ui/sign-event/external/sign-event-auth/" + token;
+        console.debug("Bypassing landing page; opening " + targetUrl);
+        window.open(targetUrl, "_blank");
+        window.addEventListener("message", (message) => { console.log("message received: ", message); }, false);
+        const infoP = document.createElement("p");
+        infoP.className = "info-message";
+        infoP.textContent = "New window opened. Listening for messages from the opened window (check the console in dev tools)…";
+        iframeContainer.appendChild(infoP);
+      } else {
+        mode = openInSeparateWindow ? "landing page (separate window)" : "iframe";
+        let iframeSrc = envUrl + "/sf/esign_event/auth/iframe_landing_page?token=" + token;
+        if (openInSeparateWindow) {
+          iframeSrc += "&openInSeparateWindow=true";
         }
+        console.debug("Loading iframe: " + iframeSrc);
+        const newIFrame = document.createElement("iframe");
+        newIFrame.setAttribute("src", iframeSrc);
+        iframeContainer.appendChild(newIFrame);
+      }
+      document.getElementById("statusMode").textContent = mode;
+      document.getElementById("iframeView").style.display = "flex";
+    }
+
+    function truncateToken(token) {
+      if (token.length <= 14) return token;
+      return token.slice(0, 6) + "…" + token.slice(-4);
+    }
+
+    function getSelectedRadioOrCheckboxValue(name) {
+      const selected = document.querySelector(`input[name="${name}"]:checked`);
+      return selected ? selected.value : null;
+    }
+
+    function submit() {
+      const tokenInput = document.getElementById("tokenInput");
+      const tokenError = document.getElementById("tokenError");
+      const token = tokenInput.value.trim();
+      if (!token) {
+        tokenInput.classList.add("error");
+        tokenError.classList.add("visible");
+        tokenInput.focus();
+        return;
       }
 
-      function getSelectedRadioOrCheckboxValue(radioGroupName) {
-        const selectedRadio = document.querySelector(`input[name="${radioGroupName}"]:checked`);
-        if (selectedRadio) {
-          return selectedRadio.value;
-        }
-        return null; // Or handle the case where no radio is selected
+      const env = getSelectedRadioOrCheckboxValue("env");
+      let url = "https://ballred1-ice.github.io/?env=" + env + "&token=" + token;
+      if (getSelectedRadioOrCheckboxValue("openInSeparateWindow") === "true") {
+        url += "&openInSeparateWindow=true";
       }
-      
-      function submit() {
-        const env = getSelectedRadioOrCheckboxValue("env");
-        const token = document.getElementById("tokenInput").value;
-        let url = "https://ballred1-ice.github.io/?env=" + env + "&token=" + token;
-        const openInSeparateWindow = getSelectedRadioOrCheckboxValue("openInSeparateWindow");
-        if (openInSeparateWindow === "true") {
-          url += "&openInSeparateWindow=true";
-        }
-        const bypassLandingPage = getSelectedRadioOrCheckboxValue("bypassLandingPage");
-        if (bypassLandingPage === "true") {
-          url += "&bypassLandingPage=true";
-        }
-        console.debug("Redirecting to " + url);
-        window.location.href = url;
+      if (getSelectedRadioOrCheckboxValue("bypassLandingPage") === "true") {
+        url += "&bypassLandingPage=true";
       }
+      console.debug("Redirecting to " + url);
+      window.location.href = url;
+    }
 
-      function returnToInputs() {
-        let url = "https://ballred1-ice.github.io";
-        window.location.href = url;
-      }
-    </script>
-  </body>
+    function returnToInputs() {
+      window.location.href = "https://ballred1-ice.github.io";
+    }
+  </script>
+</body>
 </html>
