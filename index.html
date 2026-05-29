@@ -250,12 +250,6 @@
       width: 100%;
       border: none;
     }
-
-    .info-message {
-      padding: 24px;
-      color: var(--text-muted);
-      font-size: 14px;
-    }
   </style>
 </head>
 <body>
@@ -294,15 +288,7 @@
         <div class="field">
           <div class="checkbox-field">
             <input type="checkbox" id="openInSeparateWindowInput" name="openInSeparateWindow" value="true">
-            <label for="openInSeparateWindowInput">
-              Open in separate window <span class="checkbox-hint">(landing page flow only)</span>
-            </label>
-          </div>
-          <div class="checkbox-field">
-            <input type="checkbox" id="bypassLandingPageInput" name="bypassLandingPage" value="true">
-            <label for="bypassLandingPageInput">
-              Bypass landing page <span class="checkbox-hint">(non-SSO; token must come from event invite)</span>
-            </label>
+            <label for="openInSeparateWindowInput">Open in separate window</label>
           </div>
         </div>
 
@@ -321,9 +307,9 @@
           <span class="status-label">Token</span>
           <span class="status-value" id="statusToken"></span>
         </div>
-        <div class="status-item">
-          <span class="status-label">Mode</span>
-          <span class="status-value" id="statusMode"></span>
+        <div class="status-item" id="statusFlagsItem" hidden>
+          <span class="status-label">Flags</span>
+          <span class="status-value" id="statusFlags"></span>
         </div>
         <div class="status-spacer"></div>
         <button class="return-btn" onclick="returnToInputs()">Return</button>
@@ -344,14 +330,13 @@
       const urlParams = new URLSearchParams(window.location.search);
       const env = urlParams.get("env");
       const token = urlParams.get("token");
-      const bypassLandingPage = urlParams.get("bypassLandingPage");
       const openInSeparateWindow = urlParams.get("openInSeparateWindow") === "true";
       const envUrl = ENV_URLS[env];
 
       console.debug("envUrl=" + envUrl + ", token=" + token);
 
       if (envUrl && token) {
-        showIframeView(env, token, envUrl, bypassLandingPage, openInSeparateWindow);
+        showIframeView(env, token, envUrl, openInSeparateWindow);
       } else {
         showFormView();
       }
@@ -375,36 +360,27 @@
       tokenInput.focus();
     }
 
-    function showIframeView(env, token, envUrl, bypassLandingPage, openInSeparateWindow) {
+    function showIframeView(env, token, envUrl, openInSeparateWindow) {
       const iframeContainer = document.getElementById("iframeContainer");
       document.getElementById("statusEnv").textContent = env;
       const statusToken = document.getElementById("statusToken");
       statusToken.textContent = truncateToken(token);
       statusToken.title = token;
 
-      let mode;
-      if (bypassLandingPage) {
-        mode = "bypass landing (new window)";
-        const targetUrl = envUrl + "/sf/ui/sign-event/external/sign-event-auth/" + token;
-        console.debug("Bypassing landing page; opening " + targetUrl);
-        window.open(targetUrl, "_blank");
-        window.addEventListener("message", (message) => { console.log("message received: ", message); }, false);
-        const infoP = document.createElement("p");
-        infoP.className = "info-message";
-        infoP.textContent = "New window opened. Listening for messages from the opened window (check the console in dev tools)…";
-        iframeContainer.appendChild(infoP);
-      } else {
-        mode = openInSeparateWindow ? "landing page (separate window)" : "iframe";
-        let iframeSrc = envUrl + "/sf/esign_event/auth/iframe_landing_page?token=" + token;
-        if (openInSeparateWindow) {
-          iframeSrc += "&openInSeparateWindow=true";
-        }
-        console.debug("Loading iframe: " + iframeSrc);
-        const newIFrame = document.createElement("iframe");
-        newIFrame.setAttribute("src", iframeSrc);
-        iframeContainer.appendChild(newIFrame);
+      if (openInSeparateWindow) {
+        document.getElementById("statusFlags").textContent = "openInSeparateWindow";
+        document.getElementById("statusFlagsItem").hidden = false;
       }
-      document.getElementById("statusMode").textContent = mode;
+
+      let iframeSrc = envUrl + "/sf/esign_event/auth/iframe_landing_page?token=" + token;
+      if (openInSeparateWindow) {
+        iframeSrc += "&openInSeparateWindow=true";
+      }
+      console.debug("Loading iframe: " + iframeSrc);
+      const newIFrame = document.createElement("iframe");
+      newIFrame.setAttribute("src", iframeSrc);
+      iframeContainer.appendChild(newIFrame);
+
       document.getElementById("iframeView").style.display = "flex";
     }
 
@@ -433,9 +409,6 @@
       let url = "https://ballred1-ice.github.io/?env=" + env + "&token=" + token;
       if (getSelectedRadioOrCheckboxValue("openInSeparateWindow") === "true") {
         url += "&openInSeparateWindow=true";
-      }
-      if (getSelectedRadioOrCheckboxValue("bypassLandingPage") === "true") {
-        url += "&bypassLandingPage=true";
       }
       console.debug("Redirecting to " + url);
       window.location.href = url;
